@@ -12,7 +12,7 @@ class Cp_home_panels
 	var $version         = '1.0';
 	var $description     = 'Add up to two custom panels to the control panel home page.';
 	var $settings_exist  = 'y';
-	var $docs_url        = '';
+	var $docs_url        = 'http://github.com/amphibian/ext.cp_home_panels.ee_addon';
 
 	
 	// -------------------------------
