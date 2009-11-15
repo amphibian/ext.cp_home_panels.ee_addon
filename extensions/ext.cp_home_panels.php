@@ -9,7 +9,7 @@ class Cp_home_panels
 {
 	var $settings        = array();
 	var $name            = 'Custom CP Home Panels';
-	var $version         = '1.0';
+	var $version         = '1.0.1';
 	var $description     = 'Add up to two custom panels to the control panel home page.';
 	var $settings_exist  = 'y';
 	var $docs_url        = 'http://github.com/amphibian/ext.cp_home_panels.ee_addon';
@@ -53,19 +53,20 @@ class Cp_home_panels
 	function check_for_panels()
 	{
 		$panels = array();
-		if($this->settings['custom_panel_one_heading']) $panels[] = 'custom_panel_one';
-		if($this->settings['custom_panel_two_heading']) $panels[] = 'custom_panel_two';
+		if(!empty($this->settings['custom_panel_one_heading'])) $panels[] = 'custom_panel_one';
+		if(!empty($this->settings['custom_panel_two_heading'])) $panels[] = 'custom_panel_two';
 		return $panels;
 	}
 	
 	    
 	function myaccount_homepage_builder($i)
 	{
+		global $DSP, $DB, $EXT;
+		$r = ($EXT->last_call !== FALSE) ? $EXT->last_call : '';
+
 		if($panels = $this->check_for_panels())
 		{
-			global $DSP, $DB;
 			$id = $this->get_user_id();
-			$r = '';
 			$prefs = array();
 
 			// This is all basically lifted from the function 'homepage_builder'
@@ -105,22 +106,21 @@ class Cp_home_panels
 				$r .= $DSP->table_qcell($style, $DSP->input_radio($key, 'n', ($val != 'l' && $val != 'r') ? 1 : ''));
 				$r .= $DSP->tr_c();
 	        }
-	        
-	        return $r;
 		}	
+		return $r;
 	}   
 	// END 
 
 
 	function myaccount_set_homepage_order($i)
 	{
+		global $DB, $DSP, $EXT;
+		$r = ($EXT->last_call !== FALSE) ? $EXT->last_call : '';
+
 		if($panels = $this->check_for_panels())
-		{
-			global $DB, $DSP;
-			
+		{			
 			$id = $this->get_user_id();
 			$prefs = array();		
-			$r = '';
 					
 			// This is all basically lifted from the function 'set_homepage_order'
 			// Located in /system/cp/cp.myaccount.php
@@ -164,60 +164,69 @@ class Cp_home_panels
 					$r .= $DSP->tr_c();
 				}
 	        }
-	        return $r;		
 		}
+        return $r;		
 	}   
 	// END
 	
 
 	function show_full_control_panel_end($out)
 	{
-		global $EXT;
-		if ($EXT->last_call !== FALSE)
-		{
-			$out = $EXT->last_call;
-		}
-				
-		$find= '</head>';
-		$replace = '
-		<style type="text/css">
-			td.customPanel {
-				background: url(../themes/cp_themes/default/images/box_bg.gif) repeat-x left top;
-			}
-			td.customPanel p {
-				font-size: 12px;
-				line-height: 16px;
-				margin: 10px 0;
-			}
-			td.customPanel h3,
-			td.customPanel strong,
-			td.customPanel a:link,
-			td.customPanel a:hover,
-			td.customPanel a:visited {
-				font-size: 12px;
-			}
-		</style>
+		global $EXT, $IN;
+		$out = ($EXT->last_call !== FALSE) ? $EXT->last_call : '';
 		
-		</head>
-		';
-		return str_replace($find, $replace, $out);
+		// Only add our styles on the CP home screen
+		if( $IN->GBL('C', 'GET') === FALSE && $IN->GBL('M', 'GET') === FALSE )
+		{	
+			$find= '</head>';
+			$replace = '
+			<style type="text/css">
+				td.customPanel {
+					background: url(../themes/cp_themes/default/images/box_bg.gif) repeat-x left top;
+				}
+				td.customPanel p {
+					font-size: 12px;
+					line-height: 16px;
+					margin: 10px 0;
+				}
+				td.customPanel h3,
+				td.customPanel strong,
+				td.customPanel a:link,
+				td.customPanel a:hover,
+				td.customPanel a:visited {
+					font-size: 12px;
+				}
+			</style>
+			
+			</head>
+			';
+			return str_replace($find, $replace, $out);
+		}
+		else
+		{
+			return $out;
+		}
 	}   
 	// END
 	
 		
 	function add_home_panel($method)
-	{		
-		if($this->settings[$method] && $this->settings[$method.'_heading'])
+	{										
+		global $DSP, $EXT;
+		$r = ($EXT->last_call !== FALSE) ? $EXT->last_call : '';
+
+		// With this crazy hook we need to make sure that it's our method that's being called,
+		// as other methods using this hook will *also* call this function.			
+		$our_methods = array('custom_panel_one', 'custom_panel_two');
+		if( in_array($method, $our_methods) && !empty($this->settings[$method]) && !empty($this->settings[$method.'_heading']) )
 		{
-			global $DSP;
-	
 			if ( ! class_exists('Typography') ) {
 				require_once PATH_CORE.'core.typography'.EXT;
 			}
 			$format = new Typography;
 			$text = $format->xhtml_typography($this->settings[$method]);
 			
-			$r =
+			$r .=
 			$DSP->table('tableBorder', '0', '0', '100%').
 			$DSP->tr().
 			$DSP->table_qcell('tableHeading', $this->settings[$method.'_heading']).
@@ -225,8 +234,13 @@ class Cp_home_panels
 			$DSP->table_qrow('tableCellTwo customPanel', $text).    
 			$DSP->table_c();
 			
-			return $r;
-		}	
+			// The'control_panel_home_page_left/right_option' hook doesn't return data,
+			// so we have to manually save our output in the last_call variable.
+			// Otherwise subsequent calls to this hook with other functions
+			// will overwrite what we just created.
+			$EXT->last_call = $r;
+		}
+		return $r;
 	}   
 	// END 
 		
