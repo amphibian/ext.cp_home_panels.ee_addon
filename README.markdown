@@ -1,5 +1,5 @@
 **Custom CP Home Panels** is an ExpressionEngine extension that allows you to add up to two additional panels to the EE control panel home screen. These panels can contain anything you like: instructions or notes, embedded videos, a Flickr gallery of your cat, or whatever else floats your boat.
 
-The title and content of your custom panels is controlled via the Extension Settings, and their visibility and location are configurable via the "Control Panel Homepage" link under the "My Account" tab, just like the built-in home page panels. The content of your panels is run through the XHTML formatter as well, so you don't have to tediously craft HTML.
+The title and content of your custom panels is controlled via the Extension Settings, and their visibility and location are configurable via the "Control Panel Homepage" link under the "My Account" tab, just like the built-in home page panels. Each panel can also be assigned as available only to specific member groups. The content of your panels is run through the XHTML formatter as well, so you don't have to tediously craft HTML.
 
-*Custom CP Home Panels has been tested on ExpressionEngine 1.6.8.*
+*Custom CP Home Panels has been tested on ExpressionEngine 1.6.8 and is MSM-compatible.*

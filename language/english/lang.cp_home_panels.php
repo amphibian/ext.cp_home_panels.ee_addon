@@ -3,10 +3,10 @@
 global $PREFS;
 
 $L = array(
-	'custom_panel_one_heading' => 'First panel heading',
-	'custom_panel_one' => 'First panel content',
-	'custom_panel_two_heading' => 'Second panel heading',
-	'custom_panel_two' => 'Second panel content',
-	'Yes' => 'Yes',
-	'No' => 'No'
+	'custom_panel_heading' => 'Title',
+	'custom_panel_content' => 'Content',
+	'instructions' => 'Display these panels on your control panel homepage by enabling them in your account settings.',
+	'configure_homepage' => 'Configure your homepage.',
+	'formatting_info' => 'XHTML formatting will be applied.',
+	'member_groups' => 'Assigned member groups'
 );
