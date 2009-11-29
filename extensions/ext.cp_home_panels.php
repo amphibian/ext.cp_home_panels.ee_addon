@@ -58,7 +58,9 @@ class Cp_home_panels
 		
 		$DSP->right_crumb($LANG->line('disable_extension'), BASE.AMP.'C=admin'.AMP.'M=utilities'.AMP.'P=toggle_extension_confirm'.AMP.'which=disable'.AMP.'name='.$IN->GBL('name'));
 		
-		$DSP->body = $DSP->form_open(
+		$DSP->body =   $DSP->heading($this->name.NBS.$DSP->qspan('defaultLight', $this->version), 1);
+
+		$DSP->body .= $DSP->form_open(
 			array(
 				'action' => 'C=admin'.AMP.'M=utilities'.AMP.'P=save_extension_settings',
 				'name'   => 'cp_home_panels',
@@ -68,28 +70,22 @@ class Cp_home_panels
 		);
 		
 		// $DSP->body .=	'<pre>'.print_r($current, TRUE).'</pre>';
-		
-		// Open the table
-		$DSP->body .=   $DSP->table('tableBorder', '0', '', '100%');
-		$DSP->body .=   $DSP->tr();
-		$DSP->body .=   $DSP->td('tableHeading', '', '2');
-		$DSP->body .=   $this->name;
-		$DSP->body .=   $DSP->td_c();
-		$DSP->body .=   $DSP->tr_c();
 				
 		// Give some brief instructions
-		$DSP->body .=   $DSP->tr();
-		$DSP->body .=   $DSP->td('default', '', '2');
-		$DSP->body .=   '<div class="box" style="border-width: 0; margin: 0; padding: 10px 6px;">';
-		$DSP->body .=   $LANG->line('instructions').' ';
-		$DSP->body .=	$DSP->anchor(BASE.AMP.'C=myaccount'.AMP.'M=homepage'.AMP.'id='.$this->get_user_id(), $LANG->line('configure_homepage'), 'class="defaultBold"');
-		$DSP->body .=   $DSP->div_c();
-		$DSP->body .=   $DSP->td_c();
-		$DSP->body .=   $DSP->tr_c();
-		
+		$DSP->body .=   $DSP->qdiv('box default', 
+			$LANG->line('instructions').' '.
+			$DSP->anchor(BASE.AMP.'C=myaccount'.AMP.'M=homepage'.AMP.'id='.$this->get_user_id(), 
+				$LANG->line('configure_homepage'), 'class="defaultBold"'),
+				'',
+				'style="margin-bottom: 0;"'
+			);
+
+		// Open the table
+		$DSP->body .=   $DSP->table('tableBorder', '0', '', '100%');
+				
 		// Heading for first panel
 		$DSP->body .=   $DSP->tr();
-		$DSP->body .=   $DSP->td('tableHeadingAlt', '', '2');
+		$DSP->body .=   $DSP->td('tableHeading', '', '2');
 		$DSP->body .=   'First Custom Panel';
 		$DSP->body .=   $DSP->td_c();
 		$DSP->body .=   $DSP->tr_c();		
@@ -136,7 +132,7 @@ class Cp_home_panels
 
 		// Heading for second panel
 		$DSP->body .=   $DSP->tr();
-		$DSP->body .=   $DSP->td('tableHeadingAlt', '', '2');
+		$DSP->body .=   $DSP->td('tableHeading', '', '2');
 		$DSP->body .=   'Second Custom Panel';
 		$DSP->body .=   $DSP->td_c();
 		$DSP->body .=   $DSP->tr_c();	
@@ -156,6 +152,7 @@ class Cp_home_panels
 		$DSP->body .=   $DSP->tr();		
 		$DSP->body .=   $DSP->td('tableCellOne', '25%', '', '', 'top');
 		$DSP->body .=   $LANG->line('custom_panel_content');
+		$DSP->body .=   $DSP->qdiv('defaultLight', $LANG->line('formatting_info'));
 		$DSP->body .=   $DSP->td_c();
 				
 		$DSP->body .=   $DSP->td('tableCellOne', '70%');
